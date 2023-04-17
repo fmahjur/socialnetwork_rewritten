@@ -1,7 +1,7 @@
-package ir.maktab.finalprojectphase4.validation;
+package com.challenge.socialnetworkv2.validation;
 
-import ir.maktab.finalprojectphase4.exception.ImageFileException;
-import ir.maktab.finalprojectphase4.exception.ImageSizeException;
+import com.challenge.socialnetworkv2.exception.ImageFileException;
+import com.challenge.socialnetworkv2.exception.ImageSizeException;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
