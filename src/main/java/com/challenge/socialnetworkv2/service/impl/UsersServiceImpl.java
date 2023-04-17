@@ -5,7 +5,10 @@ import com.challenge.socialnetworkv2.data.entity.Users;
 import com.challenge.socialnetworkv2.data.enumeration.Role;
 import com.challenge.socialnetworkv2.data.repository.UsersRepository;
 import com.challenge.socialnetworkv2.exception.UserNotFoundException;
+import com.challenge.socialnetworkv2.service.FriendshipService;
 import com.challenge.socialnetworkv2.service.UsersService;
+import com.challenge.socialnetworkv2.validation.PictureValidator;
+import com.challenge.socialnetworkv2.validation.UserValidation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -23,6 +26,7 @@ public class UsersServiceImpl implements UserDetailsService, UsersService {
     private final static String USER_NOT_FOUND_MSG = "user with email %s not found";
     private final UsersRepository usersRepository;
     private final PasswordEncoder passwordEncoder;
+    private final FriendshipService friendshipService;
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         return usersRepository.findByEmail(username)
@@ -38,13 +42,14 @@ public class UsersServiceImpl implements UserDetailsService, UsersService {
 
     @Override
     public void registerUser(UserDto userDto) {
+        UserValidation.isExistUser(userDto.getEmail());
+        PictureValidator.isValidImageSize(userDto.getPersonalPhoto());
         Users user = new Users();
         user.setFirstname(userDto.getFirstName());
         user.setLastname(userDto.getLastName());
         user.setEmail(userDto.getEmail());
         user.setPassword(passwordEncoder.encode(userDto.getPassword()));
-
-        user.setRole(Arrays.asList(role));
+        user.setRole(Role.REGISTERED_USER);
         usersRepository.save(user);
     }
 
@@ -55,7 +60,7 @@ public class UsersServiceImpl implements UserDetailsService, UsersService {
 
     @Override
     public Users findUserByEmail(String email) {
-        return usersRepository.findByEmail(email).orElseThrow(() -> new UserNotFoundException("user not found!"));
+        return usersRepository.findByEmail(email).orElseThrow(() -> new UserNotFoundException("This email does not exist!"));
     }
 
     @Override
