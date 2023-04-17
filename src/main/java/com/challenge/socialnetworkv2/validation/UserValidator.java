@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
-public class UserValidation {
+public class UserValidator {
     private static UsersRepository usersRepository;
 
     public static void isExistUser(String email) {
